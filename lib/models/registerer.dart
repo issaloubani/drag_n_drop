@@ -1,11 +1,28 @@
 import 'package:drag_n_drop/models/target_node.dart';
 import 'package:drag_n_drop/models/widget_data.dart';
+import 'package:drag_n_drop/providers/inspector_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'node.dart';
 
 class Registerer {
-  static final Map<Type, Widget> supportedTypes = {
+  static final Map<Type, Node> supportedTypes = {
+    Row: Node(
+      args: const {},
+      builder: (args, children) {
+        return Row(
+          crossAxisAlignment: args['crossAxisAlignment'] ?? CrossAxisAlignment.center,
+          mainAxisAlignment: args['mainAxisAlignment'] ?? MainAxisAlignment.start,
+          mainAxisSize: args['mainAxisSize'] ?? MainAxisSize.max,
+          textBaseline: args['textBaseline'],
+          textDirection: args['textDirection'],
+          verticalDirection: args['verticalDirection'] ?? VerticalDirection.down,
+          key: args['key'],
+          children: children ?? [],
+        );
+      },
+    ),
     Text: Node(
       args: const {
         'text': 'Text',
@@ -45,7 +62,7 @@ class Registerer {
     ),
   };
 
-  static Widget get(Type type) {
+  static Node get(Type type) {
     if (supportedTypes.containsKey(type)) {
       return supportedTypes[type]!;
     } else {
@@ -53,35 +70,17 @@ class Registerer {
     }
   }
 
-  static Widget build(Type type, {bool isTarget = true, Map<String, dynamic>? args}) {
-    var widget = get(type);
-
-    if (widget is Node) {
-      widget = widget.copyWith(args: args);
-    } else {
-      throw Exception('Type $type is not supported');
-    }
+  static Widget build(Type type, {bool isTarget = true, Map<String, dynamic>? args, TreeNode? treeNode}) {
+    var node = get(type);
+    node = node.copyWith(args: args, type: type);
 
     if (isTarget) {
-      return StatefulBuilder(
-        builder: (context, setState) {
-          return TargetNode<WidgetData>(
-            onAccept: (WidgetData data) {
-              if (widget is! Node) {
-                return;
-              }
-              final children = (widget as Node).children ?? [];
-              children.add(build(data.type, args: data.args));
-              setState(() {
-                widget = (widget as Node).copyWith(children: children);
-              });
-            },
-            child: widget,
-          );
-        },
+      return TargetNode(
+        node: node,
+        parent: treeNode,
       );
     }
 
-    return widget;
+    return node;
   }
 }
