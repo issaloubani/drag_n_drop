@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'providers/inspector_provider.dart';
 import 'widgets/drag_n_drop.dart';
 
 void main() {
@@ -11,12 +13,17 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Drag n drop',
-      theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => InspectorProvider()),
+      ],
+      child: MaterialApp(
+        title: 'Drag n drop',
+        theme: ThemeData(
+          primarySwatch: Colors.blueGrey,
+        ),
+        home: const Main(),
       ),
-      home: const Main(),
     );
   }
 }

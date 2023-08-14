@@ -1,6 +1,7 @@
+import 'package:drag_n_drop/providers/inspector_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../models/registerer.dart';
 import '../models/widget_data.dart';
 import 'draggable_content.dart';
 
@@ -12,13 +13,8 @@ class DragNDrop extends StatefulWidget {
 }
 
 class _DragNDropState extends State<DragNDrop> {
-  final root = Registerer.build(Container, args: {
-    "color": Colors.blue,
-  });
-
   Widget buildTree() {
-    print('buildTree');
-    return root;
+    return context.read<InspectorProvider>().root;
   }
 
   @override
@@ -27,12 +23,7 @@ class _DragNDropState extends State<DragNDrop> {
       children: [
         Expanded(
           flex: 2,
-          child: Container(
-            color: Colors.blueGrey,
-            child: const Center(
-              child: Text('Tree'),
-            ),
-          ),
+          child: Container(),
         ),
         Expanded(
           flex: 4,
@@ -40,10 +31,19 @@ class _DragNDropState extends State<DragNDrop> {
         ),
         Expanded(
           flex: 2,
-          child: Container(
-            child: Center(
-                child: Column(
+          child: Center(
+            child: Column(
               children: [
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Text("Debug"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {});
+                  },
+                  child: Text("Refresh"),
+                ),
                 DraggableContent<WidgetData>(
                   data: WidgetData(
                     type: Text,
@@ -71,17 +71,20 @@ class _DragNDropState extends State<DragNDrop> {
                   ),
                 ),
                 DraggableContent<WidgetData>(
-                  data: WidgetData(type: Column, args: {
-                    "crossAxisAlignment": CrossAxisAlignment.start,
-                    "mainAxisAlignment": MainAxisAlignment.start,
-                  }),
+                  data: WidgetData(
+                    type: Column,
+                    args: {
+                      "crossAxisAlignment": CrossAxisAlignment.start,
+                      "mainAxisAlignment": MainAxisAlignment.start,
+                    },
+                  ),
                   child: Container(
                     color: Colors.blueGrey,
                     child: const Text("Column"),
                   ),
                 ),
               ],
-            )),
+            ),
           ),
         ),
       ],

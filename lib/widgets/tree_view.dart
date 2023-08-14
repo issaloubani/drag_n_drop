@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 
 class TreeView extends StatefulWidget {
-  final SingleParentNode root;
+  final Widget root;
 
   const TreeView({super.key, required this.root});
 
@@ -12,21 +12,44 @@ class TreeView extends StatefulWidget {
 }
 
 class _TreeViewState extends State<TreeView> {
-  late final treeController;
+  late final TreeController treeController;
 
   @override
   void initState() {
     super.initState();
-    treeController = TreeController(
+    treeController = TreeController<Widget>(
       roots: [widget.root],
-      childrenProvider: (SingleParentNode node) {
-        return node.child;
+      childrenProvider: (Widget node) {
+        if (node is SingleParentNode && node.child != null) {
+          return [node.child!];
+        }
+        if (node is MultiParentNode && node.children != null) {
+          return node.children!;
+        }
+        return const Iterable.empty();
       },
     );
   }
 
+  buildTree() {
+    final currentNode = widget.root;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return AnimatedTreeView(treeController: treeController, nodeBuilder: nodeBuilder);
+    return AnimatedTreeView(
+      treeController: treeController,
+      nodeBuilder: (context, entry) {
+        String text = "";
+
+        return InkWell(
+          onTap: () => treeController.toggleExpansion(entry.node),
+          child: TreeIndentation(
+            entry: entry,
+            child: Text(text),
+          ),
+        );
+      },
+    );
   }
 }

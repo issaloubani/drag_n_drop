@@ -33,6 +33,7 @@ dependencies:
 
   flutter_tree: ^2.0.0
   flutter_fancy_tree_view: ^1.1.1
+  provider:
   #  vm_service: ^11.3.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

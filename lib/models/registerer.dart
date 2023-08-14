@@ -6,31 +6,31 @@ import 'node.dart';
 
 class Registerer {
   static final Map<Type, Widget> supportedTypes = {
-    Text: SterileNode(
+    Text: Node(
       args: const {
         'text': 'Text',
       },
-      builder: (args) {
+      builder: (args, children) {
         return Text(
           args['text'],
           style: args['style'],
         );
       },
     ),
-    Container: SingleParentNode(
+    Container: Node(
       args: const {
         "color": Colors.red,
       },
-      builder: (args, child) {
+      builder: (args, children) {
         return Container(
           color: args['color'],
           width: args['width'],
           height: args['height'],
-          child: child,
+          child: children?.first,
         );
       },
     ),
-    Column: MultiParentNode(
+    Column: Node(
       builder: (args, children) {
         return Column(
           crossAxisAlignment: args['crossAxisAlignment'] ?? CrossAxisAlignment.center,
@@ -67,19 +67,14 @@ class Registerer {
         builder: (context, setState) {
           return TargetNode<WidgetData>(
             onAccept: (WidgetData data) {
-              if (widget is SingleParentNode) {
-                setState(() {
-                  widget = (widget as SingleParentNode).copyWith(
-                    child: build(data.type, args: data.args),
-                  );
-                });
-              } else if (widget is MultiParentNode) {
-                setState(() {
-                  widget = (widget as MultiParentNode).copyWith(
-                    children: [...(widget as MultiParentNode).children ?? [], build(data.type, args: data.args)],
-                  );
-                });
+              if (widget is! Node) {
+                return;
               }
+              final children = (widget as Node).children ?? [];
+              children.add(build(data.type, args: data.args));
+              setState(() {
+                widget = (widget as Node).copyWith(children: children);
+              });
             },
             child: widget,
           );
