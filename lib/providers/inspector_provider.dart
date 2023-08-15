@@ -10,20 +10,43 @@ class InspectorProvider extends ChangeNotifier {
 
   late final root = Node(
       key: key,
-      type: Container,
+      type: Scaffold,
       builder: (args, children) {
         return Registerer.build(
-          Container,
+          Scaffold,
           args: {
-            "color": Colors.blue,
+            "appBar": Registerer.build(
+              AppBar,
+              isTarget: true,
+              args: {
+                "title": Registerer.build(
+                  Text,
+                  isTarget: false,
+                  args: {
+                    "text": "AppBar",
+                  },
+                ),
+              },
+            )
           },
           treeNode: tree,
         );
       });
 
   TreeNode tree = TreeNode(
-    value: Container,
-    children: [],
+    value: Scaffold,
+    children: [
+      TreeNode(
+        value: AppBar,
+        children: [
+          TreeNode(
+            value: Text,
+            name: "AppBar",
+            children: [],
+          ),
+        ],
+      ),
+    ],
   );
 
   late final TreeController<TreeNode> treeController = TreeController<TreeNode>(
@@ -39,20 +62,34 @@ class InspectorProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  addNode({required TreeNode node, required TreeNode parent}) {
+  addNode({
+    required TreeNode node,
+    required TreeNode parent,
+    Node? parentWidgetNode,
+    Widget? widgetNode,
+  }) {
     parent.children.add(node);
+    node.parent = parent;
+    node.parentWidgetNode = parentWidgetNode;
+    node.widgetNode = widgetNode;
     updateTree();
   }
 }
 
 class TreeNode {
   final dynamic value;
-  List<TreeNode> children;
+  final String name;
+  TreeNode? parent;
+  Node? parentWidgetNode;
+  Widget? widgetNode;
 
-  TreeNode({
-    required this.value,
-    required this.children,
-  });
+  List<TreeNode> children;
+  FocusScopeNode focusNode = FocusScopeNode(
+    skipTraversal: true,
+    traversalEdgeBehavior: TraversalEdgeBehavior.leaveFlutterView,
+  );
+
+  TreeNode({required this.value, required this.children, this.name = ""});
 
   TreeNodeData get data {
     List<TreeNodeData> list = [];
@@ -71,6 +108,18 @@ class TreeNode {
   @override
   String toString() {
     return 'TreeNode{nodes: $children}';
+  }
+
+  removeChild(TreeNode node) {
+    children.remove(node);
+  }
+
+  remove() {
+    parent?.removeChild(this);
+    print("parentWidgetNode has : ${parentWidgetNode?.children?.length}");
+    print("parentWidgetNode on remove: ${parentWidgetNode?.onRemove}");
+    parentWidgetNode?.children?.remove(widgetNode);
+    parentWidgetNode?.onRemove?.call();
   }
 
   TreeNode copyWith({

@@ -1,4 +1,4 @@
-import 'package:drag_n_drop/models/target_node.dart';
+import 'package:drag_n_drop/widgets/target_node.dart';
 import 'package:drag_n_drop/models/widget_data.dart';
 import 'package:drag_n_drop/providers/inspector_provider.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +8,31 @@ import 'node.dart';
 
 class Registerer {
   static final Map<Type, Node> supportedTypes = {
+    AppBar: Node(
+      args: const {
+        'title': Text('AppBar'),
+      },
+      builder: (args, children) {
+        return AppBar(
+          title: children?.first ?? args['title'],
+        );
+      },
+    ),
+    Scaffold: Node(
+      builder: (args, children) {
+        return Scaffold(
+          appBar: args['appBar'],
+          body: args['body'] ?? children?.first,
+          backgroundColor: args['backgroundColor'],
+          bottomNavigationBar: args['bottomNavigationBar'],
+        );
+      },
+    ),
+    TextField: Node(
+      builder: (args, children) {
+        return TextField();
+      },
+    ),
     Row: Node(
       args: const {},
       builder: (args, children) {
