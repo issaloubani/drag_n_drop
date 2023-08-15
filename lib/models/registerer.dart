@@ -1,8 +1,6 @@
-import 'package:drag_n_drop/widgets/target_node.dart';
-import 'package:drag_n_drop/models/widget_data.dart';
 import 'package:drag_n_drop/providers/inspector_provider.dart';
+import 'package:drag_n_drop/widgets/target_node.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import 'node.dart';
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
-import 'package:flutter_tree/flutter_tree.dart';
 
 import '../models/node.dart';
 import '../models/registerer.dart';
@@ -86,24 +85,9 @@ class TreeNode {
   List<TreeNode> children;
   FocusScopeNode focusNode = FocusScopeNode(
     skipTraversal: true,
-    traversalEdgeBehavior: TraversalEdgeBehavior.leaveFlutterView,
   );
 
   TreeNode({required this.value, required this.children, this.name = ""});
-
-  TreeNodeData get data {
-    List<TreeNodeData> list = [];
-    for (final child in children) {
-      list.add(child.data);
-    }
-
-    return TreeNodeData(
-      title: value.toString(),
-      expaned: true,
-      checked: false,
-      children: children.map((e) => e.data).toList(),
-    );
-  }
 
   @override
   String toString() {
