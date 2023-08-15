@@ -35,7 +35,6 @@ class _DragNDropState extends State<DragNDrop> {
       children: [
         Selector<InspectorProvider, TreeNode>(
           builder: (context, value, child) {
-            print("tree widget was built");
             final provider = context.read<InspectorProvider>();
             return Expanded(
               flex: 2,
@@ -131,12 +130,5 @@ class _DragNDropState extends State<DragNDrop> {
         ),
       ],
     );
-  }
-
-  _printTree(TreeNodeData node) {
-    print("Item $node, children length ${node.children.length}");
-    for (final child in node.children) {
-      _printTree(child);
-    }
   }
 }

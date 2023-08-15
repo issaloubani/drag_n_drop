@@ -75,41 +75,67 @@ class _DragTargetNodeState<T extends Object> extends State<DragTargetNode<T>> {
   }
 }
 
-class TargetNode extends StatelessWidget {
+class TargetNode extends StatefulWidget {
   Node node;
   TreeNode? parent;
 
   TargetNode({super.key, required this.node, this.parent});
 
   @override
+  State<TargetNode> createState() => _TargetNodeState();
+}
+
+class _TargetNodeState extends State<TargetNode> {
+  bool showToolbar = false;
+
+  @override
   Widget build(BuildContext context) {
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return DragTargetNode<WidgetData>(
-          onAccept: (WidgetData data) {
-            final children = node.children ?? [];
-            TreeNode? treeNode;
+    return Stack(
+      alignment: Alignment.center,
+      fit: StackFit.passthrough,
+      children: [
+        Expanded(
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return DragTargetNode<WidgetData>(
+                onAccept: (WidgetData data) {
+                  final children = widget.node.children ?? [];
+                  TreeNode? treeNode;
 
-            if (parent != null) {
-              treeNode = TreeNode(
-                value: data.type,
-                children: [],
+                  if (widget.parent != null) {
+                    treeNode = TreeNode(
+                      value: data.type,
+                      children: [],
+                    );
+                    context.read<InspectorProvider>().addNode(
+                          node: treeNode,
+                          parent: widget.parent!,
+                        );
+                  }
+                  children.add(Registerer.build(data.type, args: data.args, treeNode: treeNode));
+
+                  setState(() {
+                    widget.node = widget.node.copyWith(children: children);
+                  });
+                },
+                child: widget.node,
               );
-              context.read<InspectorProvider>().addNode(
-                    node: treeNode,
-                    parent: parent!,
-                  );
-
-            }
-            children.add(Registerer.build(data.type, args: data.args, treeNode: treeNode));
-
-            setState(() {
-              node = node.copyWith(children: children);
-            });
-          },
-          child: node,
-        );
-      },
+            },
+          ),
+        ),
+        Positioned(
+          right: 0,
+          top: 0,
+          width: 100,
+          child: Visibility(
+            visible: showToolbar,
+            child: Container(
+              height: 50,
+              color: Colors.blueGrey,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
