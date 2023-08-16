@@ -23,27 +23,27 @@ class _TreeViewState extends State<TreeView> {
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-              IconButton(
-                onPressed: () {
-                  provider.treeController.toggleExpansion(entry.node);
-                  entry.node.focusNode.requestFocus();
-                  provider.treeController.rebuild();
-                },
-                iconSize: 16,
-                icon: provider.treeController.getExpansionState(entry.node)
-                    ? const Icon(
-                        Icons.arrow_drop_down_rounded,
-                      )
-                    : const Icon(
-                        Icons.arrow_drop_up_rounded,
-                      ),
-                splashRadius: 18,
-              ),
+            IconButton(
+              onPressed: () {
+                provider.treeController.toggleExpansion(entry.node);
+                entry.node.focusNode.requestFocus();
+                provider.treeController.rebuild();
+              },
+              iconSize: 16,
+              icon: provider.treeController.getExpansionState(entry.node)
+                  ? const Icon(
+                      Icons.arrow_drop_down_rounded,
+                    )
+                  : const Icon(
+                      Icons.arrow_drop_up_rounded,
+                    ),
+              splashRadius: 18,
+            ),
             TreeIndentation(
               entry: entry,
               child: Text(entry.node.name ?? entry.node.value.toString()),
             ),
-            if (entry.node.parent != null)
+            if (entry.node.parent != null) ...[
               IconButton(
                 onPressed: () {
                   entry.node.remove();
@@ -52,7 +52,16 @@ class _TreeViewState extends State<TreeView> {
                 icon: const Icon(Icons.delete),
                 iconSize: 16,
                 splashRadius: 18,
+              ),
+              IconButton(
+                onPressed: () {
+                  provider.setSelectedWidget(entry.node.widgetNode);
+                },
+                icon: const Icon(Icons.remove_red_eye),
+                iconSize: 16,
+                splashRadius: 18,
               )
+            ]
           ],
         );
       },

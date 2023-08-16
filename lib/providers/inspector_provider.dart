@@ -7,6 +7,7 @@ import '../models/registerer.dart';
 
 class InspectorProvider extends ChangeNotifier {
   TreeNode treeRoot = treeRootNode;
+  Widget? selectedWidget;
   final editScreenWidget = editScreenRoot;
 
   late final TreeController<TreeNode> treeController = TreeController<TreeNode>(
@@ -33,6 +34,16 @@ class InspectorProvider extends ChangeNotifier {
     node.parentWidgetNode = parentWidgetNode;
     node.widgetNode = widgetNode;
     updateTree();
+  }
+
+  void setSelectedWidget(Widget? widget) {
+    if (widget == null) {
+      print('widget is null, please check this out');
+      return;
+    }
+    
+    selectedWidget = widget;
+    notifyListeners();
   }
 }
 

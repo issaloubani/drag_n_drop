@@ -3,12 +3,13 @@ import 'package:drag_n_drop/providers/inspector_provider.dart';
 import 'package:drag_n_drop/widgets/drag_items_view.dart';
 import 'package:drag_n_drop/widgets/toolbar.dart';
 import 'package:drag_n_drop/widgets/tree_view.dart';
+import 'package:drag_n_drop/widgets/widget_inspector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_resizable_container/flutter_resizable_container.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-import 'editor_screen.dart';
+import 'widgets/editor_screen.dart';
 
 class DragNDrop extends StatefulWidget {
   const DragNDrop({super.key});
@@ -44,7 +45,36 @@ class _DragNDropState extends State<DragNDrop> {
           startingRatio: treeViewPer,
           child: Selector<InspectorProvider, TreeNode>(
             builder: (context, value, child) {
-              return const TreeView();
+              return Column(
+                children: [
+                  const Expanded(child: TreeView()),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        AppBar(
+                          title: Text(
+                            'Inspector',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: Colors.white,
+                                ),
+                          ),
+                          elevation: 0,
+                          toolbarHeight: 30,
+                        ),
+                        const SizedBox(height: 8),
+                        Selector<InspectorProvider, Widget?>(
+                          builder: (context, selectedWidget, child) {
+                            return SelectedWidgetInspector(
+                              selectedWidget: selectedWidget,
+                            );
+                          },
+                          selector: (context, provider) => provider.selectedWidget,
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              );
             },
             selector: (context, provider) => provider.treeRoot,
           ),

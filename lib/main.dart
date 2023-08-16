@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/inspector_provider.dart';
-import 'widgets/drag_n_drop.dart';
+import 'drag_n_drop.dart';
 
 void main() {
   runApp(const App());
