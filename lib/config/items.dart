@@ -16,7 +16,10 @@ List<DragItem> supportedItems = [
   DragItem(
     data: WidgetData(
       type: Text,
-      args: {},
+      isTarget: false,
+      args: {
+        "text": "Placeholder",
+      },
     ),
     svgPath: Assets.iconsText,
     name: "Text",

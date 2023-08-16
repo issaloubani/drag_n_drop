@@ -4,6 +4,7 @@ import 'package:drag_n_drop/widgets/drag_items_view.dart';
 import 'package:drag_n_drop/widgets/toolbar.dart';
 import 'package:drag_n_drop/widgets/tree_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_resizable_container/flutter_resizable_container.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
@@ -31,24 +32,25 @@ class _DragNDropState extends State<DragNDrop> {
   }
 
   Widget buildTree() {
-    return context.read<InspectorProvider>().root;
+    return context.read<InspectorProvider>().editScreenWidget;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return ResizableContainer(
+      direction: Axis.horizontal,
       children: [
-        Selector<InspectorProvider, TreeNode>(
-          builder: (context, value, child) {
-            return SizedBox(
-              width: MediaQuery.of(context).size.width * treeViewPer,
-              child: TreeView(),
-            );
-          },
-          selector: (context, provider) => provider.tree,
+        ResizableChildData(
+          startingRatio: treeViewPer,
+          child: Selector<InspectorProvider, TreeNode>(
+            builder: (context, value, child) {
+              return const TreeView();
+            },
+            selector: (context, provider) => provider.treeRoot,
+          ),
         ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * editScreenPer,
+        ResizableChildData(
+          startingRatio: editScreenPer,
           child: Stack(
             fit: StackFit.passthrough,
             alignment: Alignment.topCenter,
@@ -63,14 +65,13 @@ class _DragNDropState extends State<DragNDrop> {
             ],
           ),
         ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * dragItemsViewPer,
-          child: Stack(
+        ResizableChildData(
+          startingRatio: dragItemsViewPer,
+          child: const Stack(
             alignment: Alignment.center,
             fit: StackFit.passthrough,
             children: [
-              const DragItemsView(),
-
+              DragItemsView(),
             ],
           ),
         ),

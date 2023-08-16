@@ -8,10 +8,10 @@ import '../models/widget_data.dart';
 import 'drag_target_node.dart';
 
 class TargetNode extends StatefulWidget implements PreferredSizeWidget {
-  Node node;
+  Node? node;
   TreeNode? parent;
 
-  TargetNode({super.key, required this.node, this.parent});
+  TargetNode({super.key, this.node, this.parent});
 
   @override
   State<TargetNode> createState() => _TargetNodeState();
@@ -25,7 +25,6 @@ class _TargetNodeState extends State<TargetNode> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -43,20 +42,23 @@ class _TargetNodeState extends State<TargetNode> {
             builder: (context, setState) {
               return DragTargetNode<WidgetData>(
                 onAccept: (WidgetData data) {
+                  if (widget.node == null) {
+                    return;
+                  }
                   /*
                   * On accept, we need to add the widget to the tree
                   * */
                   TreeNode? treeNode;
-                  final children = widget.node.children ?? [];
+                  final children = widget.node!.children ?? [];
                   Widget? newWidget;
                   // first, we need to check if the widget has a parent
                   // if not then we need to add it to the root
                   if (widget.parent == null) {
                     // add the widget to the root
-                    children.add(Registerer.build(data.type, args: data.args, treeNode: treeNode));
+                    children.add(Registerer.build(data.type, args: data.args, treeNode: treeNode, isTarget: data.isTarget));
                     // update the tree
                     // use immutable data to update the tree
-                    widget.node = widget.node.copyWith(children: children);
+                    widget.node = widget.node!.copyWith(children: children);
                     setState(() {});
                     return;
                   }
@@ -66,14 +68,14 @@ class _TargetNodeState extends State<TargetNode> {
                     children: [],
                   );
                   // add the widget to the tree with tree node
-                  newWidget = Registerer.build(data.type, args: data.args, treeNode: treeNode);
+                  newWidget = Registerer.build(data.type, args: data.args, treeNode: treeNode, isTarget: data.isTarget);
                   children.add(newWidget);
                   // add function on remove to be executed when the widget is removed
                   // update the tree using immutable data
-                  widget.node = widget.node.copyWith(
+                  widget.node = widget.node!.copyWith(
                     children: children,
                     onRemove: () {
-                      widget.node = widget.node.copyWith();
+                      widget.node = widget.node!.copyWith();
                       setState(() {});
                     },
                   );
@@ -86,7 +88,7 @@ class _TargetNodeState extends State<TargetNode> {
                       );
                   setState(() {});
                 },
-                child: widget.node,
+                child: widget.node ?? Container(),
               );
             },
           ),

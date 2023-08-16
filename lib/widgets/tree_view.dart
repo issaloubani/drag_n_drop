@@ -23,7 +23,6 @@ class _TreeViewState extends State<TreeView> {
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-
               IconButton(
                 onPressed: () {
                   provider.treeController.toggleExpansion(entry.node);
@@ -42,7 +41,7 @@ class _TreeViewState extends State<TreeView> {
               ),
             TreeIndentation(
               entry: entry,
-              child: Text(entry.node.value.toString()),
+              child: Text(entry.node.name ?? entry.node.value.toString()),
             ),
             if (entry.node.parent != null)
               IconButton(
