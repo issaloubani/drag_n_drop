@@ -7,8 +7,9 @@ import '../models/node.dart';
 
 class SelectedWidgetInspector extends StatefulWidget {
   final Widget? selectedWidget;
+  final void Function(Map<String, dynamic> args)? onUpdate;
 
-  const SelectedWidgetInspector({super.key, this.selectedWidget});
+  const SelectedWidgetInspector({super.key, this.selectedWidget, this.onUpdate});
 
   @override
   State<SelectedWidgetInspector> createState() => _SelectedWidgetInspectorState();
@@ -97,7 +98,7 @@ class _SelectedWidgetInspectorState extends State<SelectedWidgetInspector> {
                 ),
               ),
               const SizedBox(height: 16),
-              Table(border: TableBorder.all(color: Colors.grey[300]!), children: [
+              Table(defaultVerticalAlignment: TableCellVerticalAlignment.middle, border: TableBorder.all(color: Colors.grey[300]!), children: [
                 ...node!.args.entries.map(
                   (e) => TableRow(
                     children: [
@@ -112,12 +113,27 @@ class _SelectedWidgetInspectorState extends State<SelectedWidgetInspector> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          e.value.toString(),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Colors.grey[600],
-                              ),
+                        child: TextField(
+                          controller: () {
+                            final controller = TextEditingController();
+                            controller.text = e.value.toString();
+                            controller.addListener(() {
+                              final args = node!.args;
+                              args[e.key] = controller.text;
+                              widget.onUpdate?.call(args);
+                            });
+                            return controller;
+                          }.call(),
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                          ),
                         ),
+                        // child: Text(
+                        //   e.value.toString(),
+                        //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        //         color: Colors.grey[600],
+                        //       ),
+                        // ),
                       ),
                     ],
                   ),

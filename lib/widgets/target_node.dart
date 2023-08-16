@@ -78,6 +78,10 @@ class _TargetNodeState extends State<TargetNode> {
                       widget.node = widget.node!.copyWith();
                       setState(() {});
                     },
+                    onUpdate: (Map<String, dynamic> args) {
+                      widget.node = widget.node!.copyWith(args: args);
+                      setState(() {});
+                    },
                   );
                   // add the widget to the tree
                   context.read<InspectorProvider>().addNode(

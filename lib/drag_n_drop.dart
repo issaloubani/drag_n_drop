@@ -67,9 +67,12 @@ class _DragNDropState extends State<DragNDrop> {
                           builder: (context, selectedWidget, child) {
                             return SelectedWidgetInspector(
                               selectedWidget: selectedWidget,
+                              onUpdate: (args) {
+                                context.read<InspectorProvider>().updateWidget(args);
+                              },
                             );
                           },
-                          selector: (context, provider) => provider.selectedWidget,
+                          selector: (context, provider) => provider.selectedWidget?.widgetNode,
                         )
                       ],
                     ),
@@ -132,10 +135,10 @@ class _DragNDropState extends State<DragNDrop> {
         ),
         ResizableChildData(
           startingRatio: dragItemsViewPer,
-          child: const Stack(
+          child: Stack(
             alignment: Alignment.center,
             fit: StackFit.passthrough,
-            children: [
+            children: const [
               DragItemsView(),
             ],
           ),

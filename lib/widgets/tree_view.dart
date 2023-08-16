@@ -55,7 +55,7 @@ class _TreeViewState extends State<TreeView> {
               ),
               IconButton(
                 onPressed: () {
-                  provider.setSelectedWidget(entry.node.widgetNode);
+                  provider.setSelectedWidget(entry.node);
                 },
                 icon: const Icon(Icons.remove_red_eye),
                 iconSize: 16,
