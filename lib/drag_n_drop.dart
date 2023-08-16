@@ -10,6 +10,7 @@ import 'package:flutter_resizable_container/flutter_resizable_container.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
+import 'models/tree_node.dart';
 import 'widgets/editor_screen.dart';
 
 class DragNDrop extends StatefulWidget {

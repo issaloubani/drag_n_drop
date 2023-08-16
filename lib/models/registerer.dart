@@ -1,5 +1,5 @@
 import 'package:drag_n_drop/config/supported_items.dart';
-import 'package:drag_n_drop/providers/inspector_provider.dart';
+import 'package:drag_n_drop/models/tree_node.dart';
 import 'package:drag_n_drop/widgets/target_node.dart';
 import 'package:flutter/material.dart';
 

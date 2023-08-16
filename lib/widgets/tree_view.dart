@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:provider/provider.dart';
 
+import '../models/tree_node.dart';
 import '../providers/inspector_provider.dart';
 
 class TreeView extends StatefulWidget {
@@ -47,6 +48,11 @@ class _TreeViewState extends State<TreeView> {
               IconButton(
                 onPressed: () {
                   entry.node.remove();
+                  if (context.read<InspectorProvider>().selectedWidget == entry.node) {
+                    print('selected widget is removed');
+                    context.read<InspectorProvider>().setSelectedWidget(null);
+                  }
+
                   provider.updateTree();
                 },
                 icon: const Icon(Icons.delete),

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../models/node.dart';
 import '../models/registerer.dart';
-import '../providers/inspector_provider.dart';
+import '../models/tree_node.dart';
 
 GlobalKey key = GlobalKey();
 

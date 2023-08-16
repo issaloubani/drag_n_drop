@@ -5,6 +5,7 @@ import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 
 import '../config/root.dart';
 import '../models/node.dart';
+import '../models/tree_node.dart';
 
 class InspectorProvider extends ChangeNotifier {
   TreeNode treeRoot = treeRootNode;
@@ -40,11 +41,6 @@ class InspectorProvider extends ChangeNotifier {
   }
 
   void setSelectedWidget(TreeNode? node) {
-    if (node == null) {
-      print('widget is null, please check this out');
-      return;
-    }
-
     selectedWidget = node;
     notifyListeners();
   }
@@ -72,71 +68,7 @@ class InspectorProvider extends ChangeNotifier {
     }
     node = node?.copyWith(args: args);
     selectedWidget?.update(node, args);
+    selectedWidget = selectedWidget?.copyWith();
     updateTree();
-  }
-}
-
-class TreeNode {
-  final dynamic value;
-  final String? name;
-  TreeNode? parent;
-  Node? parentWidgetNode;
-  Widget? widgetNode;
-
-  List<TreeNode> children;
-  FocusScopeNode focusNode = FocusScopeNode(
-    skipTraversal: true,
-  );
-
-  TreeNode({
-    required this.value,
-    required this.children,
-    this.name,
-    this.parent,
-    this.parentWidgetNode,
-    this.widgetNode,
-  });
-
-  @override
-  String toString() {
-    return 'TreeNode{nodes: $children}';
-  }
-
-  removeChild(TreeNode node) {
-    children.remove(node);
-  }
-
-  remove() {
-    parent?.removeChild(this);
-    parentWidgetNode?.children?.remove(widgetNode);
-    parentWidgetNode?.onRemove?.call();
-  }
-
-  update(Node? newWidgetNode, Map<String, dynamic> args) {
-    print("Size of children before : ${parentWidgetNode?.children?.length}");
-    parentWidgetNode?.children?.removeWhere((element) {
-      return (element as Node).name == newWidgetNode?.name;
-    });
-    print("Size of children after: ${parentWidgetNode?.children?.length}");
-    parentWidgetNode?.children?.add(newWidgetNode!);
-    parentWidgetNode?.onUpdate?.call(args);
-  }
-
-  TreeNode copyWith({
-    final dynamic value,
-    List<TreeNode>? children,
-    String? name,
-    TreeNode? parent,
-    Node? parentWidgetNode,
-    Widget? widgetNode,
-  }) {
-    return TreeNode(
-      value: value ?? this.value,
-      children: children ?? this.children,
-      name: name ?? this.name,
-      parent: parent ?? this.parent,
-      parentWidgetNode: parentWidgetNode ?? this.parentWidgetNode,
-      widgetNode: widgetNode ?? this.widgetNode,
-    );
   }
 }
