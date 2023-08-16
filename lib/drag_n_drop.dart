@@ -1,5 +1,6 @@
 import 'package:drag_n_drop/generated/assets.dart';
 import 'package:drag_n_drop/providers/inspector_provider.dart';
+import 'package:drag_n_drop/providers/theme_provider.dart';
 import 'package:drag_n_drop/widgets/drag_items_view.dart';
 import 'package:drag_n_drop/widgets/toolbar.dart';
 import 'package:drag_n_drop/widgets/tree_view.dart';
@@ -86,11 +87,45 @@ class _DragNDropState extends State<DragNDrop> {
             alignment: Alignment.topCenter,
             children: [
               EditScreen(
+                key: context.read<InspectorProvider>().editScreenKey,
                 child: buildTree(),
               ),
               const Positioned(
                 top: 0,
                 child: ToolBar(),
+              ),
+              Positioned(
+                top: 100,
+                right: 0,
+                child: Card(
+                  child: Column(
+                    children: [
+                      IconButton(
+                        onPressed: () => context.read<InspectorProvider>().editScreenScaleUp(),
+                        icon: const Icon(Icons.zoom_in),
+                        splashRadius: 20,
+                      ),
+                      IconButton(
+                        onPressed: () => context.read<InspectorProvider>().editScreenScaleDown(),
+                        icon: const Icon(Icons.zoom_out),
+                        splashRadius: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Consumer<ThemeProvider>(
+                  builder: (BuildContext context, ThemeProvider provider, Widget? child) {
+                    return ThemeButtonMenu(
+                      onMaterialThemeUIChange: (state) {
+                        provider.useMaterial = state;
+                      },
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -106,6 +141,54 @@ class _DragNDropState extends State<DragNDrop> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class ThemeButtonMenu extends StatefulWidget {
+  final Function(bool state) onMaterialThemeUIChange;
+
+  const ThemeButtonMenu({
+    super.key,
+    required this.onMaterialThemeUIChange,
+  });
+
+  @override
+  State<ThemeButtonMenu> createState() => _ThemeButtonMenuState();
+}
+
+class _ThemeButtonMenuState extends State<ThemeButtonMenu> {
+  late List<bool> isSelected;
+
+  @override
+  void initState() {
+    super.initState();
+    isSelected = [context.read<ThemeProvider>().useMaterial];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child: ToggleButtons(
+        isSelected: isSelected,
+        children: [
+          SvgPicture.asset(
+            Assets.iconsMaterialUi,
+            width: 20,
+            height: 20,
+          ),
+        ],
+        onPressed: (index) {
+          switch (index) {
+            case 0:
+              widget.onMaterialThemeUIChange(isSelected[index] = !isSelected[index]);
+              break;
+            default:
+              break;
+          }
+        },
+      ),
     );
   }
 }

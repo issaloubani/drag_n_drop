@@ -7,10 +7,10 @@ class EditScreen extends StatefulWidget {
   const EditScreen({Key? key, required this.child}) : super(key: key);
 
   @override
-  State<EditScreen> createState() => _EditScreenState();
+  State<EditScreen> createState() => EditScreenState();
 }
 
-class _EditScreenState extends State<EditScreen> {
+class EditScreenState extends State<EditScreen> {
   double scale = .8;
   Offset offset = const Offset(0, 0);
   Offset initialOffset = const Offset(0, 0);
@@ -41,19 +41,19 @@ class _EditScreenState extends State<EditScreen> {
     isScaling = false;
   }
 
-  void _scaleUp() {
+  void scaleUp() {
     setState(() {
       scale *= 1.1; // You can adjust the scaling factor
     });
   }
 
-  void _scaleDown() {
+  void scaleDown() {
     setState(() {
       scale /= 1.1; // You can adjust the scaling factor
     });
   }
 
-  _EditScreenState() {
+  EditScreenState() {
     // Initialize the offset to center the edited UI within the EditScreen
     final initialX = (size.width - size.width * scale) / 2;
     final initialY = (size.height - size.height * scale) / 2;
@@ -70,9 +70,9 @@ class _EditScreenState extends State<EditScreen> {
         onPointerSignal: (PointerSignalEvent event) {
           if (event is PointerScrollEvent && event.kind == PointerDeviceKind.mouse) {
             if (event.scrollDelta.dy > 0) {
-              _scaleDown();
+              scaleDown();
             } else if (event.scrollDelta.dy < 0) {
-              _scaleUp();
+              scaleUp();
             }
           }
         },
@@ -109,22 +109,6 @@ class _EditScreenState extends State<EditScreen> {
                       ),
                     ),
                     // zoom in/out
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: Column(
-                        children: [
-                          IconButton(
-                            onPressed: _scaleUp,
-                            icon: const Icon(Icons.zoom_in),
-                          ),
-                          IconButton(
-                            onPressed: _scaleDown,
-                            icon: const Icon(Icons.zoom_out),
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),

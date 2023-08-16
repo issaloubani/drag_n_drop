@@ -1,3 +1,4 @@
+import 'package:drag_n_drop/widgets/editor_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 
@@ -7,6 +8,8 @@ import '../models/registerer.dart';
 
 class InspectorProvider extends ChangeNotifier {
   TreeNode treeRoot = treeRootNode;
+  GlobalKey<EditScreenState> editScreenKey = GlobalKey<EditScreenState>();
+
   Widget? selectedWidget;
   final editScreenWidget = editScreenRoot;
 
@@ -41,9 +44,17 @@ class InspectorProvider extends ChangeNotifier {
       print('widget is null, please check this out');
       return;
     }
-    
+
     selectedWidget = widget;
     notifyListeners();
+  }
+
+  editScreenScaleUp() {
+    editScreenKey.currentState?.scaleUp();
+  }
+
+  editScreenScaleDown() {
+    editScreenKey.currentState?.scaleDown();
   }
 }
 

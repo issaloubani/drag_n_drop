@@ -17,10 +17,12 @@ class _ToolBarState extends State<ToolBar> {
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.ads_click),
+            splashRadius: 20,
           ),
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.back_hand),
+            splashRadius: 20,
           ),
         ],
       ),
