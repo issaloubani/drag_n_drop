@@ -1,5 +1,7 @@
+import 'package:drag_n_drop/providers/theme_provider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EditScreen extends StatefulWidget {
   final Widget child;
@@ -101,7 +103,7 @@ class EditScreenState extends State<EditScreen> {
             return Container(
               width: double.infinity,
               height: double.infinity,
-              color: Colors.grey[300],
+              color: context.read<ThemeProvider>().selectedTheme.theme?.brightness == Brightness.dark ? Colors.grey[600] : Colors.grey[300],
               child: ClipRRect(
                 child: Stack(
                   alignment: Alignment.center,

@@ -1,9 +1,11 @@
 import 'package:drag_n_drop/models/enum_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 import '../generated/assets.dart';
 import '../models/node.dart';
+import '../providers/theme_provider.dart';
 
 class SelectedWidgetInspector extends StatefulWidget {
   final Node? selectedWidget;
@@ -91,7 +93,7 @@ class _SelectedWidgetInspectorState extends State<SelectedWidgetInspector> {
             children: [
               if (widget.selectedWidget?.canBeViewed ?? false)
                 Card(
-                  color: Colors.grey[200],
+                  color: context.read<ThemeProvider>().selectedTheme.theme?.brightness == Brightness.dark ? Colors.grey[600] : Colors.grey[300],
                   child: SizedBox.fromSize(
                     size: const Size.fromHeight(100),
                     child: Center(child: peakNode),
