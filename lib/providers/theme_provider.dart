@@ -12,6 +12,8 @@ class ThemeProvider extends ChangeNotifier {
 
   DragNDropTheme get selectedTheme => _dragNDropTheme;
 
+  bool get isDarkMode => _dragNDropTheme.theme?.brightness == Brightness.dark;
+
   void setTheme(DragNDropTheme theme) {
     _dragNDropTheme = theme;
   }
@@ -28,6 +30,15 @@ class ThemeProvider extends ChangeNotifier {
       _dragNDropTheme.theme = _dragNDropTheme.theme!.copyWith(
         useMaterial3: value,
       );
+    }
+    notifyListeners();
+  }
+
+  void toggleTheme() {
+    if (isDarkMode) {
+      theme = supportedThemes["light"]!;
+    } else {
+      theme = supportedThemes["dark"]!;
     }
     notifyListeners();
   }

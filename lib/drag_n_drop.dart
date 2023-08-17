@@ -6,6 +6,7 @@ import 'package:drag_n_drop/widgets/toolbar.dart';
 import 'package:drag_n_drop/widgets/tree_view.dart';
 import 'package:drag_n_drop/widgets/widget_inspector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_resizable_container/flutter_resizable_container.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -120,7 +121,7 @@ class _DragNDropState extends State<DragNDrop> {
               ),
               Positioned(
                 top: 0,
-                right: 0,
+                right: 5,
                 child: Consumer<ThemeProvider>(
                   builder: (BuildContext context, ThemeProvider provider, Widget? child) {
                     return ThemeButtonMenu(
@@ -136,10 +137,10 @@ class _DragNDropState extends State<DragNDrop> {
         ),
         ResizableChildData(
           startingRatio: dragItemsViewPer,
-          child: Stack(
+          child: const Stack(
             alignment: Alignment.center,
             fit: StackFit.passthrough,
-            children: const [
+            children: [
               DragItemsView(),
             ],
           ),
@@ -172,27 +173,88 @@ class _ThemeButtonMenuState extends State<ThemeButtonMenu> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: ToggleButtons(
-        isSelected: isSelected,
-        children: [
-          SvgPicture.asset(
-            Assets.iconsMaterialUi,
-            width: 20,
-            height: 20,
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Theme.of(context).cardColor,
+            ),
+            child: ToggleButtons(
+              borderRadius: BorderRadius.circular(10),
+              isSelected: isSelected,
+              children: [
+                SvgPicture.asset(
+                  Assets.iconsMaterialUi,
+                  width: 20,
+                  height: 20,
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
+                ),
+              ],
+              onPressed: (index) {
+                switch (index) {
+                  case 0:
+                    widget.onMaterialThemeUIChange(isSelected[index] = !isSelected[index]);
+                    break;
+                  default:
+                    break;
+                }
+              },
+            ),
           ),
-        ],
-        onPressed: (index) {
-          switch (index) {
-            case 0:
-              widget.onMaterialThemeUIChange(isSelected[index] = !isSelected[index]);
-              break;
-            default:
-              break;
-          }
-        },
-      ),
+        ),
+        const SizedBox(width: 8),
+        Consumer<ThemeProvider>(
+          builder: (context, provider, child) => AdvancedSwitch(
+            controller: () {
+              final notifier = ValueNotifier<bool>(provider.isDarkMode);
+              notifier.addListener(() {
+                provider.toggleTheme();
+              });
+              return notifier;
+            }.call(),
+            activeColor: Colors.black54,
+            inactiveColor: Colors.white54,
+            thumb: ValueListenableBuilder(
+              valueListenable: ValueNotifier<bool>(provider.isDarkMode),
+              builder: (_, value, __) {
+                if (value) {
+                  return Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.black38,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: SvgPicture.asset(
+                        Assets.iconsDark,
+                        color: Colors.white,
+                      ),
+                    ),
+                  );
+                }
+                return Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: SvgPicture.asset(Assets.iconsLight),
+                  ),
+                );
+              },
+            ),
+            borderRadius: const BorderRadius.all(Radius.circular(15)),
+            width: 50.0,
+            height: 30.0,
+            enabled: true,
+            disabledOpacity: 0.5,
+          ),
+        )
+      ],
     );
   }
 }

@@ -33,11 +33,11 @@ class _TreeViewState extends State<TreeView> {
               iconSize: 16,
               icon: provider.treeController.getExpansionState(entry.node)
                   ? const Icon(
-                      Icons.arrow_drop_down_rounded,
-                    )
+                Icons.arrow_drop_down_rounded,
+              )
                   : const Icon(
-                      Icons.arrow_drop_up_rounded,
-                    ),
+                Icons.arrow_drop_up_rounded,
+              ),
               splashRadius: 18,
             ),
             TreeIndentation(
@@ -47,13 +47,7 @@ class _TreeViewState extends State<TreeView> {
             if (entry.node.parent != null) ...[
               IconButton(
                 onPressed: () {
-                  entry.node.remove();
-                  if (context.read<InspectorProvider>().selectedWidget == entry.node) {
-                    print('selected widget is removed');
-                    context.read<InspectorProvider>().setSelectedWidget(null);
-                  }
-
-                  provider.updateTree();
+                  provider.removeSelectedWidget(entry.node);
                 },
                 icon: const Icon(Icons.delete),
                 iconSize: 16,

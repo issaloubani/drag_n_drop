@@ -4,8 +4,10 @@ class Assets {
 
   static const String iconsColumn = 'assets/icons/column.svg';
   static const String iconsContainer = 'assets/icons/container.svg';
+  static const String iconsDark = 'assets/icons/dark.svg';
   static const String iconsEmpty = 'assets/icons/empty.svg';
   static const String iconsError = 'assets/icons/error.svg';
+  static const String iconsLight = 'assets/icons/light.svg';
   static const String iconsMateriaDesign = 'assets/icons/materia_design.svg';
   static const String iconsMaterialUi = 'assets/icons/material-ui.svg';
   static const String iconsResizeHorizontal = 'assets/icons/resize_horizontal.svg';

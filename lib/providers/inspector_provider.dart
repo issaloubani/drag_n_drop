@@ -71,4 +71,28 @@ class InspectorProvider extends ChangeNotifier {
     selectedWidget = selectedWidget?.copyWith();
     updateTree();
   }
+
+  void removeSelectedWidget(TreeNode node) {
+    String? nodeId;
+    String? selectedNodeId;
+    if (node.widgetNode is Node) {
+      nodeId = (node.widgetNode as Node).name;
+    } else if (node.widgetNode is TargetNode) {
+      nodeId = (node.widgetNode as TargetNode).node!.name;
+    }
+
+    if (selectedWidget?.widgetNode is Node) {
+      selectedNodeId = (selectedWidget?.widgetNode as Node).name;
+    } else if (selectedWidget?.widgetNode is TargetNode) {
+      selectedNodeId = (selectedWidget?.widgetNode as TargetNode).node!.name;
+    }
+
+    if (nodeId == selectedNodeId) {
+      selectedWidget = null;
+    } else {
+      return;
+    }
+    node.remove();
+    updateTree();
+  }
 }
