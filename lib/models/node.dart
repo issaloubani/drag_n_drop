@@ -43,15 +43,19 @@ class Node extends StatelessWidget implements PreferredSizeWidget {
         this.setState = setState;
         return DragTargetNode<WidgetData>(
           onAccept: (WidgetData data) {
-            context.read<InspectorProvider>()
-              ..setSelectedWidget(add(data))
-              ..updateTree();
-            setState(() {});
+            onAccept(context, data);
           },
           child: builder(args, children),
         );
       },
     );
+  }
+
+  void onAccept(BuildContext context, WidgetData data) {
+    context.read<InspectorProvider>()
+      ..setSelectedWidget(add(data))
+      ..updateTree();
+    setState?.call(() {});
   }
 
   Node add(WidgetData data) {

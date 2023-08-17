@@ -55,14 +55,19 @@ class _DragNDropState extends State<DragNDrop> {
                     child: Column(
                       children: [
                         AppBar(
-                          title: Text(
+                          title: const Text(
                             'Inspector',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Colors.white,
-                                ),
                           ),
                           elevation: 0,
                           toolbarHeight: 30,
+                          titleTextStyle: TextStyle(
+                            fontSize: 16,
+                            color: context.read<ThemeProvider>().useMaterial
+                                ? (context.read<ThemeProvider>().isDarkMode)
+                                    ? Colors.white
+                                    : Colors.black
+                                : Colors.white,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Consumer<InspectorProvider>(
@@ -146,7 +151,7 @@ class _DragNDropState extends State<DragNDrop> {
         ),
         ResizableChildData(
           startingRatio: dragItemsViewPer,
-          child:  Stack(
+          child: Stack(
             alignment: Alignment.center,
             fit: StackFit.passthrough,
             children: const [
