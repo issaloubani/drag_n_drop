@@ -146,10 +146,10 @@ class _DragNDropState extends State<DragNDrop> {
         ),
         ResizableChildData(
           startingRatio: dragItemsViewPer,
-          child: const Stack(
+          child:  Stack(
             alignment: Alignment.center,
             fit: StackFit.passthrough,
-            children: [
+            children: const [
               DragItemsView(),
             ],
           ),

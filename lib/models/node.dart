@@ -97,6 +97,29 @@ class Node extends StatelessWidget implements PreferredSizeWidget {
     setState?.call(() {});
   }
 
+  bool contains(Node? node) {
+    if (sameAs(node)) {
+      return true;
+    }
+
+    if (children != null) {
+      for (final child in children!) {
+        if (child.contains(node)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  bool sameAs(Node? node) {
+    if (node == null) {
+      return false;
+    }
+    return node.id == id;
+  }
+
   @override
   Size get preferredSize => const Size.fromHeight(50);
 

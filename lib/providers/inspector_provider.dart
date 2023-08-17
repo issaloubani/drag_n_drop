@@ -19,7 +19,7 @@ class InspectorProvider extends ChangeNotifier {
   );
 
   updateTree() {
-    _debugPrintNodeTree();
+    // _debugPrintNodeTree();
     editScreenWidget = editScreenWidget.copyWith();
     treeController.expandAll();
     notifyListeners();
@@ -57,26 +57,6 @@ class InspectorProvider extends ChangeNotifier {
     }
     selectedWidget?.updateArgs(args);
     updateTree();
-  }
-
-  void removeSelectedWidget(Node node) {
-    // String? nodeId;
-    // String? selectedNodeId;
-    // if (node.node is Node) {
-    //   nodeId = (node.node as Node).name;
-    // }
-    //
-    // if (selectedWidget?.node is Node) {
-    //   selectedNodeId = (selectedWidget?.node as Node).name;
-    // }
-    //
-    // if (nodeId == selectedNodeId) {
-    //   selectedWidget = null;
-    // } else {
-    //   return;
-    // }
-    // node.remove();
-    // updateTree();
   }
 
   void editScreenResetLocation() {

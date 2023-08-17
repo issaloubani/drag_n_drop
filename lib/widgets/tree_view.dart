@@ -66,7 +66,15 @@ class _TreeViewState extends State<TreeView> {
     provider
       ..updateTree()
       ..treeController.rebuild();
-    (provider.selectedWidget?.id == node.id) ? provider.setSelectedWidget(null) : null;
+    // check if selected widget is the same
+    if (provider.selectedWidget?.sameAs(node) ?? false) {
+      provider.setSelectedWidget(null);
+      return;
+    }
+    // check if the selected widget is a child of the deleted node
+    if (node.contains(provider.selectedWidget) ?? false) {
+      provider.setSelectedWidget(null);
+    }
   }
 
   _onViewPressed(Node node) {
