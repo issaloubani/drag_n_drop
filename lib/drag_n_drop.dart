@@ -48,10 +48,18 @@ class _DragNDropState extends State<DragNDrop> {
           startingRatio: treeViewPer,
           child: Selector<InspectorProvider, Node?>(
             builder: (context, value, child) {
-              return Column(
+              return ResizableContainer(
+                direction: Axis.vertical,
                 children: [
-                  const Expanded(child: TreeView()),
-                  Expanded(
+                  const ResizableChildData(
+                    startingRatio: 0.6,
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: TreeView(),
+                    ),
+                  ),
+                  ResizableChildData(
+                    startingRatio: 0.4,
                     child: Column(
                       children: [
                         AppBar(

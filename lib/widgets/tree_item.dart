@@ -1,5 +1,7 @@
+import 'package:drag_n_drop/generated/assets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../models/node.dart';
@@ -46,17 +48,29 @@ class _TreeItemState extends State<TreeItem> {
           child: Row(
             children: [
               if (entry.node.children?.isNotEmpty ?? false)
-                IconButton(
-                  onPressed: () => _onExpandPressed(entry.node),
-                  iconSize: 16,
-                  icon: provider.treeController.getExpansionState(entry.node)
-                      ? const Icon(
-                          Icons.arrow_drop_down_rounded,
-                        )
-                      : const Icon(
-                          Icons.arrow_drop_up_rounded,
-                        ),
-                  splashRadius: 18,
+                InkWell(
+                  borderRadius: BorderRadius.circular(8),
+                  onTap: () => _onExpandPressed(entry.node),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: themeProvider.isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: provider.treeController.getExpansionState(entry.node)
+                          ? SvgPicture.asset(
+                              Assets.iconsExpandArrow,
+                              width: 16,
+                              color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                            )
+                          : SvgPicture.asset(
+                              Assets.iconsCollapseArrow,
+                              width: 16,
+                              color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                            ),
+                    ),
+                  ),
                 ),
               const SizedBox(width: 8),
               Text(entry.node.name),

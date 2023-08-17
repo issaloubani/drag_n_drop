@@ -4,11 +4,13 @@ class Assets {
 
   static const String iconsCenter = 'assets/icons/center.svg';
   static const String iconsCenterReturn = 'assets/icons/center_return.svg';
+  static const String iconsCollapseArrow = 'assets/icons/collapse_arrow.svg';
   static const String iconsColumn = 'assets/icons/column.svg';
   static const String iconsContainer = 'assets/icons/container.svg';
   static const String iconsDark = 'assets/icons/dark.svg';
   static const String iconsEmpty = 'assets/icons/empty.svg';
   static const String iconsError = 'assets/icons/error.svg';
+  static const String iconsExpandArrow = 'assets/icons/expand_arrow.svg';
   static const String iconsLight = 'assets/icons/light.svg';
   static const String iconsMaterialDesign = 'assets/icons/material_design.svg';
   static const String iconsMaterialUi = 'assets/icons/material_ui.svg';
