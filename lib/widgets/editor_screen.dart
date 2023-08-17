@@ -63,6 +63,10 @@ class EditScreenState extends State<EditScreen> {
     });
   }
 
+  refresh() {
+    setState(() {});
+  }
+
   EditScreenState() {
     // Initialize the offset to center the edited UI within the EditScreen
     final initialX = (size.width - size.width * scale) / 2;

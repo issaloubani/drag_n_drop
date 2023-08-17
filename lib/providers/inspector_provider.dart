@@ -1,46 +1,44 @@
 import 'package:drag_n_drop/widgets/editor_screen.dart';
-import 'package:drag_n_drop/widgets/target_node.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 
 import '../config/root.dart';
 import '../models/node.dart';
-import '../models/tree_node.dart';
 
 class InspectorProvider extends ChangeNotifier {
-  TreeNode treeRoot = treeRootNode;
   GlobalKey<EditScreenState> editScreenKey = GlobalKey<EditScreenState>();
 
-  TreeNode? selectedWidget;
-  final editScreenWidget = editScreenRoot;
+  Node editScreenWidget = editScreenRoot.copyWith();
+  Node? selectedWidget;
 
-  late final TreeController<TreeNode> treeController = TreeController<TreeNode>(
+  late final TreeController<Node> treeController = TreeController<Node>(
     roots: [
-      treeRoot,
+      editScreenRoot,
     ],
-    childrenProvider: (TreeNode node) => node.children,
+    childrenProvider: (Node node) => node.children ?? [],
   );
 
   updateTree() {
-    treeRoot = treeRoot.copyWith();
+    _debugPrintNodeTree();
+    editScreenWidget = editScreenWidget.copyWith();
     treeController.expandAll();
     notifyListeners();
   }
 
-  addNode({
-    required TreeNode node,
-    required TreeNode parent,
-    Node? parentWidgetNode,
-    Widget? widgetNode,
-  }) {
-    parent.children.add(node);
-    node.parent = parent;
-    node.parentWidgetNode = parentWidgetNode;
-    node.widgetNode = widgetNode;
-    updateTree();
+  _debugPrintNodeTree() {
+    _printNode(editScreenWidget);
   }
 
-  void setSelectedWidget(TreeNode? node) {
+  _printNode(Node node) {
+    print("Node id : ${node.id}");
+    if (node.children != null) {
+      for (final child in node.children!) {
+        _printNode(child);
+      }
+    }
+  }
+
+  void setSelectedWidget(Node? node) {
     selectedWidget = node;
     notifyListeners();
   }
@@ -55,48 +53,37 @@ class InspectorProvider extends ChangeNotifier {
 
   void updateWidget(Map<String, dynamic> args) {
     if (selectedWidget == null) {
-      print('selectedWidget is null, please check this out');
       return;
     }
-    Node? node;
-    final nodeToBeUpdated = selectedWidget?.widgetNode;
-
-    if (nodeToBeUpdated is Node) {
-      node = nodeToBeUpdated;
-    } else if (nodeToBeUpdated is TargetNode) {
-      node = (nodeToBeUpdated).node;
-    }
-    node = node?.copyWith(args: args);
-    selectedWidget?.update(node, args);
-    selectedWidget = selectedWidget?.copyWith();
+    selectedWidget?.updateArgs(args);
     updateTree();
   }
 
-  void removeSelectedWidget(TreeNode node) {
-    String? nodeId;
-    String? selectedNodeId;
-    if (node.widgetNode is Node) {
-      nodeId = (node.widgetNode as Node).name;
-    } else if (node.widgetNode is TargetNode) {
-      nodeId = (node.widgetNode as TargetNode).node!.name;
-    }
-
-    if (selectedWidget?.widgetNode is Node) {
-      selectedNodeId = (selectedWidget?.widgetNode as Node).name;
-    } else if (selectedWidget?.widgetNode is TargetNode) {
-      selectedNodeId = (selectedWidget?.widgetNode as TargetNode).node!.name;
-    }
-
-    if (nodeId == selectedNodeId) {
-      selectedWidget = null;
-    } else {
-      return;
-    }
-    node.remove();
-    updateTree();
+  void removeSelectedWidget(Node node) {
+    // String? nodeId;
+    // String? selectedNodeId;
+    // if (node.node is Node) {
+    //   nodeId = (node.node as Node).name;
+    // }
+    //
+    // if (selectedWidget?.node is Node) {
+    //   selectedNodeId = (selectedWidget?.node as Node).name;
+    // }
+    //
+    // if (nodeId == selectedNodeId) {
+    //   selectedWidget = null;
+    // } else {
+    //   return;
+    // }
+    // node.remove();
+    // updateTree();
   }
 
   void editScreenResetLocation() {
     editScreenKey.currentState?.reset();
+  }
+
+  void editScreenRefresh() {
+    editScreenKey.currentState?.refresh();
   }
 }

@@ -1,4 +1,5 @@
 import 'package:drag_n_drop/generated/assets.dart';
+import 'package:drag_n_drop/models/node.dart';
 import 'package:drag_n_drop/providers/inspector_provider.dart';
 import 'package:drag_n_drop/providers/theme_provider.dart';
 import 'package:drag_n_drop/widgets/drag_items_view.dart';
@@ -11,7 +12,6 @@ import 'package:flutter_resizable_container/flutter_resizable_container.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-import 'models/tree_node.dart';
 import 'widgets/editor_screen.dart';
 
 class DragNDrop extends StatefulWidget {
@@ -36,7 +36,7 @@ class _DragNDropState extends State<DragNDrop> {
   }
 
   Widget buildTree() {
-    return context.read<InspectorProvider>().editScreenWidget;
+    return context.watch<InspectorProvider>().editScreenWidget;
   }
 
   @override
@@ -46,7 +46,7 @@ class _DragNDropState extends State<DragNDrop> {
       children: [
         ResizableChildData(
           startingRatio: treeViewPer,
-          child: Selector<InspectorProvider, TreeNode>(
+          child: Selector<InspectorProvider, Node?>(
             builder: (context, value, child) {
               return Column(
                 children: [
@@ -65,16 +65,14 @@ class _DragNDropState extends State<DragNDrop> {
                           toolbarHeight: 30,
                         ),
                         const SizedBox(height: 8),
-                        Selector<InspectorProvider, Widget?>(
-                          builder: (context, selectedWidget, child) {
-                            return SelectedWidgetInspector(
-                              selectedWidget: selectedWidget,
-                              onUpdate: (args) {
-                                context.read<InspectorProvider>().updateWidget(args);
-                              },
-                            );
-                          },
-                          selector: (context, provider) => provider.selectedWidget?.widgetNode,
+                        Consumer<InspectorProvider>(
+                          builder: (context, provider, child) => SelectedWidgetInspector(
+                            selectedWidget: provider.selectedWidget,
+                            onUpdate: (args) {
+                              provider.updateWidget(args);
+                              return provider.selectedWidget!;
+                            },
+                          ),
                         )
                       ],
                     ),
@@ -82,7 +80,7 @@ class _DragNDropState extends State<DragNDrop> {
                 ],
               );
             },
-            selector: (context, provider) => provider.treeRoot,
+            selector: (context, provider) => provider.editScreenWidget,
           ),
         ),
         ResizableChildData(
@@ -91,10 +89,12 @@ class _DragNDropState extends State<DragNDrop> {
             fit: StackFit.passthrough,
             alignment: Alignment.topCenter,
             children: [
-              EditScreen(
-                key: context.read<InspectorProvider>().editScreenKey,
-                child: buildTree(),
-              ),
+              Consumer<InspectorProvider>(builder: (context, provider, child) {
+                return EditScreen(
+                  key: provider.editScreenKey,
+                  child: provider.editScreenWidget,
+                );
+              }),
               const Positioned(
                 top: 0,
                 child: ToolBar(),

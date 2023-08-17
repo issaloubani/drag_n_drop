@@ -1,18 +1,9 @@
-import 'package:drag_n_drop/widgets/target_node.dart';
 import 'package:flutter/material.dart';
 
 import '../models/enum_type.dart';
 import '../models/node.dart';
 
 final Map<Type, Node> supportedItems = {
-  TargetNode: Node(
-    builder: (args, children) {
-      return TargetNode(
-        node: args['node'] ?? Container(),
-        parent: args['parent'],
-      );
-    },
-  ),
   AppBar: Node(
     args: const {
       'title': Text('AppBar'),

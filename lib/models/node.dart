@@ -1,47 +1,124 @@
+import 'package:drag_n_drop/models/registerer.dart';
+import 'package:drag_n_drop/models/widget_data.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class Node extends StatelessWidget {
+import '../providers/inspector_provider.dart';
+import '../widgets/drag_target_node.dart';
+
+class Node extends StatelessWidget implements PreferredSizeWidget {
   Function? onRemove;
   Function(Map<String, dynamic> args)? onUpdate;
   Type? type;
-  String name;
+  String id;
+  List<Node>? children;
+  Node? parent;
+  Function? setState;
+  Map<String, dynamic> args;
 
-  final Widget Function(Map<String, dynamic> args, List<Widget>? children) builder;
-  final Map<String, dynamic> args;
-  final List<Widget>? children;
+  final Widget Function(Map<String, dynamic> args, List<Node>? children) builder;
   final Map<String, dynamic> supportedParameters;
 
-  Node({super.key, this.args = const {}, required this.builder, this.children, this.type, this.onRemove, this.onUpdate, this.name = "", this.supportedParameters = const {}});
+  Node({
+    super.key,
+    this.args = const {},
+    required this.builder,
+    this.children,
+    this.type,
+    this.onRemove,
+    this.onUpdate,
+    this.id = "",
+    this.supportedParameters = const {},
+    this.parent,
+  }) {
+    generateId();
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (name.isEmpty) {
-      // random name
-      name = "${type.toString()}${DateTime.now().millisecondsSinceEpoch}";
-    }
-    return builder(args, children);
+    return StatefulBuilder(
+      builder: (context, setState) {
+        this.setState = setState;
+        return DragTargetNode<WidgetData>(
+          onAccept: (WidgetData data) {
+            context.read<InspectorProvider>()
+              ..setSelectedWidget(add(data))
+              ..updateTree();
+            setState(() {});
+          },
+          child: builder(args, children),
+        );
+      },
+    );
   }
 
+  Node add(WidgetData data) {
+    final node = Registerer.build(data.type, args: data.args);
+    addNode(node);
+    return node;
+  }
+
+  void remove(String nodeId) {
+    int index = -1;
+    // find index of node
+    // then remove it from children and parent
+    children?.forEach((element) {
+      if (element.id == nodeId) {
+        index = children!.indexOf(element);
+      }
+    });
+    if (index != -1) {
+      children?.removeAt(index);
+    }
+  }
+
+  String generateId() {
+    // random name
+    id = "${type.toString()}${DateTime.now().millisecondsSinceEpoch}";
+    return id;
+  }
+
+  void addNode(Node newNode) {
+    final children = this.children ?? [];
+    newNode.parent = this;
+    children.add(newNode);
+    this.children = children;
+  }
+
+  void removeNode(Node nodeToRemove) {
+    remove(nodeToRemove.id);
+    setState?.call(() {});
+  }
+
+  void updateArgs(Map<String, dynamic> args) {
+    this.args = args;
+    setState?.call(() {});
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(50);
+
   Node copyWith({
-    Map<String, dynamic>? args,
-    Map<String, dynamic>? supportedParameters,
-    Widget Function(Map<String, dynamic> args, List<Widget>? children)? builder,
-    List<Widget>? children,
-    Type? type,
     Function? onRemove,
-    String? name,
     Function(Map<String, dynamic> args)? onUpdate,
+    Type? type,
+    String? id,
+    List<Node>? children,
+    Node? parent,
+    final Widget Function(Map<String, dynamic> args, List<Node>? children)? builder,
+    final Map<String, dynamic>? args,
+    final Map<String, dynamic>? supportedParameters,
   }) {
     return Node(
-      key: key,
-      args: {...args ?? this.args},
-      supportedParameters: supportedParameters ?? this.supportedParameters,
-      builder: builder ?? this.builder,
-      type: type ?? this.type,
-      name: name ?? this.name,
       onRemove: onRemove ?? this.onRemove,
       onUpdate: onUpdate ?? this.onUpdate,
-      children: children ?? this.children,
+      type: type ?? this.type,
+      id: id ?? this.id,
+      parent: parent ?? this.parent,
+      builder: builder ?? this.builder,
+      args: {...args ?? this.args},
+      supportedParameters: supportedParameters ?? this.supportedParameters,
+      children: [...?children ?? this.children],
     );
   }
 }

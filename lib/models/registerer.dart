@@ -1,7 +1,4 @@
 import 'package:drag_n_drop/config/supported_items.dart';
-import 'package:drag_n_drop/models/tree_node.dart';
-import 'package:drag_n_drop/widgets/target_node.dart';
-import 'package:flutter/material.dart';
 
 import 'node.dart';
 
@@ -16,17 +13,13 @@ class Registerer {
     }
   }
 
-  static Widget build(Type type, {bool isTarget = true, Map<String, dynamic>? args, TreeNode? treeNode}) {
+  static Node build(Type type, {bool isTarget = true, Map<String, dynamic>? args}) {
     var node = get(type);
-    node = node.copyWith(args: args, type: type);
-
-    if (isTarget) {
-      return TargetNode(
-        node: node,
-        parent: treeNode,
-      );
-    }
-
+    node = node.copyWith(
+      args: args,
+      type: type,
+      id: node.generateId(),
+    );
     return node;
   }
 }
