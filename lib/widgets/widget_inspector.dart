@@ -1,9 +1,6 @@
 import 'package:drag_n_drop/models/enum_type.dart';
-import 'package:drag_n_drop/models/registerer.dart';
-import 'package:drag_n_drop/providers/inspector_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 
 import '../generated/assets.dart';
 import '../models/node.dart';
@@ -92,13 +89,14 @@ class _SelectedWidgetInspectorState extends State<SelectedWidgetInspector> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Card(
-                color: Colors.grey[200],
-                child: SizedBox.fromSize(
-                  size: const Size.fromHeight(100),
-                  child: Center(child: peakNode),
+              if (widget.selectedWidget?.canBeViewed ?? false)
+                Card(
+                  color: Colors.grey[200],
+                  child: SizedBox.fromSize(
+                    size: const Size.fromHeight(100),
+                    child: Center(child: peakNode),
+                  ),
                 ),
-              ),
               const SizedBox(height: 16),
               if (widget.selectedWidget != null)
                 Table(defaultVerticalAlignment: TableCellVerticalAlignment.middle, border: TableBorder.all(color: Colors.grey[300]!), children: [

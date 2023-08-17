@@ -18,7 +18,7 @@ List<DragItem> supportedItems = [
       type: Text,
       isTarget: false,
       args: {
-        "text": "Placeholder",
+        "text": "Label",
       },
     ),
     svgPath: Assets.iconsText,
@@ -39,5 +39,23 @@ List<DragItem> supportedItems = [
     ),
     svgPath: Assets.iconsRow,
     name: "Row",
+  ),
+  DragItem(
+    data: WidgetData(
+      type: Center,
+      args: {},
+    ),
+    svgPath: Assets.iconsCenter,
+    name: "Center",
+  ),
+  DragItem(
+    data: WidgetData(
+      type: Padding,
+      args: {
+        "padding": const EdgeInsets.all(8.0),
+      },
+    ),
+    svgPath: Assets.iconsPadding,
+    name: "Padding",
   ),
 ];

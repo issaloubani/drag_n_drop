@@ -39,7 +39,7 @@ class _TreeViewState extends State<TreeView> {
             ),
             TreeIndentation(
               entry: entry,
-              child: Text(entry.node.id),
+              child: Text(entry.node.name),
             ),
             if (entry.node.parent != null) ...[
               IconButton(

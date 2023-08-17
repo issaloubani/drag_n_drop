@@ -7,14 +7,15 @@ import '../providers/inspector_provider.dart';
 import '../widgets/drag_target_node.dart';
 
 class Node extends StatelessWidget implements PreferredSizeWidget {
-  Function? onRemove;
-  Function(Map<String, dynamic> args)? onUpdate;
   Type? type;
   String id;
   List<Node>? children;
   Node? parent;
   Function? setState;
   Map<String, dynamic> args;
+  bool canHaveChildren;
+  bool canBeViewed;
+  String name;
 
   final Widget Function(Map<String, dynamic> args, List<Node>? children) builder;
   final Map<String, dynamic> supportedParameters;
@@ -25,11 +26,12 @@ class Node extends StatelessWidget implements PreferredSizeWidget {
     required this.builder,
     this.children,
     this.type,
-    this.onRemove,
-    this.onUpdate,
     this.id = "",
     this.supportedParameters = const {},
     this.parent,
+    this.canHaveChildren = true,
+    this.canBeViewed = true,
+    this.name = "",
   }) {
     generateId();
   }
@@ -99,8 +101,6 @@ class Node extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(50);
 
   Node copyWith({
-    Function? onRemove,
-    Function(Map<String, dynamic> args)? onUpdate,
     Type? type,
     String? id,
     List<Node>? children,
@@ -108,16 +108,20 @@ class Node extends StatelessWidget implements PreferredSizeWidget {
     final Widget Function(Map<String, dynamic> args, List<Node>? children)? builder,
     final Map<String, dynamic>? args,
     final Map<String, dynamic>? supportedParameters,
+    bool? canHaveChildren,
+    bool? canBeViewed,
+    String? name,
   }) {
     return Node(
-      onRemove: onRemove ?? this.onRemove,
-      onUpdate: onUpdate ?? this.onUpdate,
+      name: name ?? this.name,
       type: type ?? this.type,
       id: id ?? this.id,
       parent: parent ?? this.parent,
       builder: builder ?? this.builder,
       args: {...args ?? this.args},
       supportedParameters: supportedParameters ?? this.supportedParameters,
+      canHaveChildren: canHaveChildren ?? this.canHaveChildren,
+      canBeViewed: canBeViewed ?? this.canBeViewed,
       children: [...?children ?? this.children],
     );
   }

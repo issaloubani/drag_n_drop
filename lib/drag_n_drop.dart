@@ -118,7 +118,7 @@ class _DragNDropState extends State<DragNDrop> {
                       IconButton(
                         onPressed: () => context.read<InspectorProvider>().editScreenResetLocation(),
                         icon: SvgPicture.asset(
-                          Assets.iconsCenter,
+                          Assets.iconsCenterReturn,
                           width: 18,
                           color: Theme.of(context).textTheme.bodyMedium?.color,
                         ),

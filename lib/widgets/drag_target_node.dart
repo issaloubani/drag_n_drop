@@ -55,6 +55,8 @@ class _DragTargetNodeState<T extends Object> extends State<DragTargetNode<T>> {
         return Container(
           decoration: BoxDecoration(
               border: Border.all(
+            style: BorderStyle.solid,
+            strokeAlign: BorderSide.strokeAlignOutside,
             color: color,
             width: 2,
           )),

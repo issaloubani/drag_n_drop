@@ -5,6 +5,7 @@ import '../models/node.dart';
 
 final Map<Type, Node> supportedItems = {
   AppBar: Node(
+    name: 'AppBar',
     args: const {
       'title': Text('AppBar'),
     },
@@ -15,6 +16,7 @@ final Map<Type, Node> supportedItems = {
     },
   ),
   Scaffold: Node(
+    name: 'Scaffold',
     builder: (args, children) {
       return Scaffold(
         appBar: args['appBar'],
@@ -25,11 +27,13 @@ final Map<Type, Node> supportedItems = {
     },
   ),
   TextField: Node(
+    name: 'TextField',
     builder: (args, children) {
       return TextField();
     },
   ),
   Row: Node(
+    name: 'Row',
     args: const {},
     builder: (args, children) {
       return Row(
@@ -45,9 +49,11 @@ final Map<Type, Node> supportedItems = {
     },
   ),
   Text: Node(
+    name: 'Text',
     args: const {
       'text': 'Text',
     },
+    canHaveChildren: false,
     supportedParameters: const {
       'text': String,
       'textAlign': EnumType<TextAlign>(
@@ -64,6 +70,7 @@ final Map<Type, Node> supportedItems = {
     },
   ),
   Container: Node(
+    name: 'Container',
     args: const {
       "color": Colors.red,
     },
@@ -77,6 +84,7 @@ final Map<Type, Node> supportedItems = {
     },
   ),
   Column: Node(
+    name: 'Column',
     builder: (args, children) {
       return Column(
         crossAxisAlignment: args['crossAxisAlignment'] ?? CrossAxisAlignment.center,
@@ -86,6 +94,39 @@ final Map<Type, Node> supportedItems = {
         textDirection: args['textDirection'],
         verticalDirection: args['verticalDirection'] ?? VerticalDirection.down,
         children: children ?? [],
+      );
+    },
+  ),
+  Center: Node(
+    name: 'Center',
+    args: const {
+      'heightFactor': 1.0,
+      'widthFactor': 1.0,
+    },
+    supportedParameters: const {
+      'heightFactor': double,
+      'widthFactor': double,
+    },
+    builder: (args, children) {
+      return Center(
+        heightFactor: args['heightFactor'],
+        widthFactor: args['widthFactor'],
+        child: (children != null && children.isNotEmpty) ? children.first : null,
+      );
+    },
+  ),
+  Padding: Node(
+    name: 'Padding',
+    args: const {
+      'padding': EdgeInsets.all(8.0),
+    },
+    supportedParameters: const {
+      'padding': EdgeInsets,
+    },
+    builder: (args, children) {
+      return Padding(
+        padding: args['padding'],
+        child: (children != null && children.isNotEmpty) ? children.first : null,
       );
     },
   ),
