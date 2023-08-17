@@ -23,11 +23,12 @@ class DragItem extends StatelessWidget {
               SvgPicture.asset(
                 svgPath,
                 width: 50,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
               Text(
                 name,
-                style: const TextStyle(
-                  color: Colors.black,
+                style:  TextStyle(
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                   fontSize: 16,
                 ),
               ),

@@ -2,6 +2,7 @@
 class Assets {
   Assets._();
 
+  static const String iconsCenter = 'assets/icons/center.svg';
   static const String iconsColumn = 'assets/icons/column.svg';
   static const String iconsContainer = 'assets/icons/container.svg';
   static const String iconsDark = 'assets/icons/dark.svg';

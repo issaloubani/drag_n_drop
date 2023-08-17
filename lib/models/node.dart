@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 
 class Node extends StatelessWidget {
-  final Widget Function(Map<String, dynamic> args, List<Widget>? children) builder;
-  final Map<String, dynamic> args;
-  final List<Widget>? children;
   Function? onRemove;
   Function(Map<String, dynamic> args)? onUpdate;
   Type? type;
   String name;
-  Node({super.key, this.args = const {}, required this.builder, this.children, this.type, this.onRemove, this.onUpdate, this.name = ""});
+
+  final Widget Function(Map<String, dynamic> args, List<Widget>? children) builder;
+  final Map<String, dynamic> args;
+  final List<Widget>? children;
+  final Map<String, dynamic> supportedParameters;
+
+  Node({super.key, this.args = const {}, required this.builder, this.children, this.type, this.onRemove, this.onUpdate, this.name = "", this.supportedParameters = const {}});
+
   @override
   Widget build(BuildContext context) {
-    if(name.isEmpty){
+    if (name.isEmpty) {
       // random name
       name = "${type.toString()}${DateTime.now().millisecondsSinceEpoch}";
     }
@@ -20,6 +24,7 @@ class Node extends StatelessWidget {
 
   Node copyWith({
     Map<String, dynamic>? args,
+    Map<String, dynamic>? supportedParameters,
     Widget Function(Map<String, dynamic> args, List<Widget>? children)? builder,
     List<Widget>? children,
     Type? type,
@@ -29,7 +34,8 @@ class Node extends StatelessWidget {
   }) {
     return Node(
       key: key,
-      args: {... args ?? this.args},
+      args: {...args ?? this.args},
+      supportedParameters: supportedParameters ?? this.supportedParameters,
       builder: builder ?? this.builder,
       type: type ?? this.type,
       name: name ?? this.name,

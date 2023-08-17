@@ -1,6 +1,7 @@
 import 'package:drag_n_drop/widgets/target_node.dart';
 import 'package:flutter/material.dart';
 
+import '../models/enum_type.dart';
 import '../models/node.dart';
 
 final Map<Type, Node> supportedItems = {
@@ -56,9 +57,17 @@ final Map<Type, Node> supportedItems = {
     args: const {
       'text': 'Text',
     },
+    supportedParameters: const {
+      'text': String,
+      'textAlign': EnumType<TextAlign>(
+        type: TextAlign,
+        values: TextAlign.values,
+      ),
+    },
     builder: (args, children) {
       return Text(
         args['text'],
+        textAlign: args['textAlign'] ?? TextAlign.start,
         style: args['style'],
       );
     },

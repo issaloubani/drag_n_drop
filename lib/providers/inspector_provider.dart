@@ -95,4 +95,8 @@ class InspectorProvider extends ChangeNotifier {
     node.remove();
     updateTree();
   }
+
+  void editScreenResetLocation() {
+    editScreenKey.currentState?.reset();
+  }
 }

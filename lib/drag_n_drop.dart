@@ -115,6 +115,15 @@ class _DragNDropState extends State<DragNDrop> {
                         icon: const Icon(Icons.zoom_out),
                         splashRadius: 20,
                       ),
+                      IconButton(
+                        onPressed: () => context.read<InspectorProvider>().editScreenResetLocation(),
+                        icon: SvgPicture.asset(
+                          Assets.iconsCenter,
+                          width: 18,
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
+                        ),
+                        splashRadius: 20,
+                      ),
                     ],
                   ),
                 ),
