@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 
-class TargetNode<T extends Object> extends StatefulWidget {
+class DragTargetNode<T extends Object> extends StatefulWidget {
   final Widget child;
   final void Function(T data)? onAccept;
 
-  const TargetNode({super.key, required this.child, this.onAccept});
+  const DragTargetNode({super.key, required this.child, this.onAccept});
 
   @override
-  State<TargetNode<T>> createState() => _TargetNodeState<T>();
+  State<DragTargetNode<T>> createState() => _DragTargetNodeState<T>();
 
-  TargetNode copyWith({
+  DragTargetNode copyWith({
     final Widget? child,
     final void Function(T data)? onAccept,
   }) {
-    return TargetNode<T>(
+    return DragTargetNode<T>(
       onAccept: onAccept ?? this.onAccept,
       child: child ?? this.child,
     );
   }
 }
 
-class _TargetNodeState<T extends Object> extends State<TargetNode<T>> {
+class _DragTargetNodeState<T extends Object> extends State<DragTargetNode<T>> {
   Color color = Colors.transparent;
 
   @override
@@ -55,6 +55,8 @@ class _TargetNodeState<T extends Object> extends State<TargetNode<T>> {
         return Container(
           decoration: BoxDecoration(
               border: Border.all(
+            style: BorderStyle.solid,
+            strokeAlign: BorderSide.strokeAlignCenter,
             color: color,
             width: 2,
           )),
@@ -64,7 +66,7 @@ class _TargetNodeState<T extends Object> extends State<TargetNode<T>> {
     );
   }
 
-  _TargetNodeState copyWith() {
-    return _TargetNodeState();
+  _DragTargetNodeState copyWith() {
+    return _DragTargetNodeState();
   }
 }

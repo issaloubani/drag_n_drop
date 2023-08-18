@@ -1,88 +1,155 @@
+import 'package:drag_n_drop/models/registerer.dart';
+import 'package:drag_n_drop/models/widget_data.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-abstract class Node extends StatelessWidget {
-  const Node({super.key});
+import '../providers/inspector_provider.dart';
+import '../widgets/drag_target_node.dart';
 
-  @override
-  Widget build(BuildContext context);
+class Node extends StatelessWidget implements PreferredSizeWidget {
+  Type? type;
+  String id;
+  List<Node>? children;
+  Node? parent;
+  Function? setState;
+  Map<String, dynamic> args;
+  bool canHaveChildren;
+  bool canBeViewed;
+  String name;
 
-  Node copyWith({Map<String, dynamic>? args});
-}
+  final Widget Function(Map<String, dynamic> args, List<Node>? children) builder;
+  final Map<String, dynamic> supportedParameters;
 
-class SingleParentNode extends Node {
-  final Widget Function(Map<String, dynamic> args, Widget? child) builder;
-  final Map<String, dynamic> args;
-  Widget? child;
-
-  SingleParentNode({super.key, required this.builder, this.args = const {}});
+  Node({
+    super.key,
+    this.args = const {},
+    required this.builder,
+    this.children,
+    this.type,
+    this.id = "",
+    this.supportedParameters = const {},
+    this.parent,
+    this.canHaveChildren = true,
+    this.canBeViewed = true,
+    this.name = "",
+  }) {
+    generateId();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return builder.call(args, child);
-  }
-
-  @override
-  SingleParentNode copyWith({
-    final Widget Function(Map<String, dynamic> args, Widget? child)? builder,
-    final Map<String, dynamic>? args,
-    Widget? child,
-  }) {
-    final widget = SingleParentNode(
-      builder: builder ?? this.builder,
-      args: args ?? this.args,
+    return StatefulBuilder(
+      builder: (context, setState) {
+        this.setState = setState;
+        return DragTargetNode<WidgetData>(
+          onAccept: (WidgetData data) {
+            onAccept(context, data);
+          },
+          child: builder(args, children),
+        );
+      },
     );
-    widget.child = child ?? this.child;
-    return widget;
-  }
-}
-
-class MultiParentNode extends Node {
-  final Widget Function(Map<String, dynamic> args, List<Widget>? children) builder;
-  final Map<String, dynamic> args;
-  List<Widget>? children;
-
-  MultiParentNode({super.key, required this.builder, this.args = const {}});
-
-  @override
-  Widget build(BuildContext context) {
-    return builder.call(args, children);
   }
 
+  void onAccept(BuildContext context, WidgetData data) {
+    context.read<InspectorProvider>()
+      ..setSelectedWidget(add(data))
+      ..updateTree();
+    setState?.call(() {});
+  }
+
+  Node add(WidgetData data) {
+    final node = Registerer.build(data.type, args: data.args);
+    addNode(node);
+    return node;
+  }
+
+  void remove(String nodeId) {
+    int index = -1;
+    // find index of node
+    // then remove it from children and parent
+    children?.forEach((element) {
+      if (element.id == nodeId) {
+        index = children!.indexOf(element);
+      }
+    });
+    if (index != -1) {
+      children?.removeAt(index);
+    }
+  }
+
+  String generateId() {
+    // random name
+    id = "${type.toString()}${DateTime.now().millisecondsSinceEpoch}";
+    return id;
+  }
+
+  void addNode(Node newNode) {
+    final children = this.children ?? [];
+    newNode.parent = this;
+    children.add(newNode);
+    this.children = children;
+  }
+
+  void removeNode(Node nodeToRemove) {
+    remove(nodeToRemove.id);
+    setState?.call(() {});
+  }
+
+  void updateArgs(Map<String, dynamic> args) {
+    this.args = args;
+    setState?.call(() {});
+  }
+
+  bool contains(Node? node) {
+    if (sameAs(node)) {
+      return true;
+    }
+
+    if (children != null) {
+      for (final child in children!) {
+        if (child.contains(node)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  bool sameAs(Node? node) {
+    if (node == null) {
+      return false;
+    }
+    return node.id == id;
+  }
+
   @override
-  MultiParentNode copyWith({
-    final Widget Function(Map<String, dynamic> args, List<Widget>? children)? builder,
+  Size get preferredSize => const Size.fromHeight(50);
+
+  Node copyWith({
+    Type? type,
+    String? id,
+    List<Node>? children,
+    Node? parent,
+    final Widget Function(Map<String, dynamic> args, List<Node>? children)? builder,
     final Map<String, dynamic>? args,
-    List<Widget>? children,
+    final Map<String, dynamic>? supportedParameters,
+    bool? canHaveChildren,
+    bool? canBeViewed,
+    String? name,
   }) {
-    final widget = MultiParentNode(
+    return Node(
+      name: name ?? this.name,
+      type: type ?? this.type,
+      id: id ?? this.id,
+      parent: parent ?? this.parent,
       builder: builder ?? this.builder,
-      args: args ?? this.args,
+      args: {...args ?? this.args},
+      supportedParameters: supportedParameters ?? this.supportedParameters,
+      canHaveChildren: canHaveChildren ?? this.canHaveChildren,
+      canBeViewed: canBeViewed ?? this.canBeViewed,
+      children: [...?children ?? this.children],
     );
-    widget.children = children ?? this.children;
-    return widget;
-  }
-}
-
-class SterileNode extends Node {
-  Widget Function(Map<String, dynamic> args) builder;
-  final Map<String, dynamic> args;
-
-  SterileNode({super.key, required this.builder, this.args = const {}});
-
-  @override
-  Widget build(BuildContext context) {
-    return builder.call(args);
-  }
-
-  @override
-  SterileNode copyWith({
-    final Widget Function(Map<String, dynamic> args)? builder,
-    final Map<String, dynamic>? args,
-  }) {
-    final widget = SterileNode(
-      builder: builder ?? this.builder,
-      args: args ?? this.args,
-    );
-    return widget;
   }
 }
