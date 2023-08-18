@@ -20,7 +20,7 @@ This project is currently in active development. Stay tuned for updates as I con
 
 ## Getting Involved
 
-We welcome contributions, feedback, and ideas from the community. If you're passionate about Flutter UI development, consider getting involved in this exciting project.
+I welcome contributions, feedback, and ideas from the community. If you're passionate about Flutter UI development, consider getting involved in this exciting project.
 
 ## Roadmap
 
