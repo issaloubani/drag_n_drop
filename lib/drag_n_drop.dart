@@ -41,132 +41,155 @@ class _DragNDropState extends State<DragNDrop> {
 
   @override
   Widget build(BuildContext context) {
-    return ResizableContainer(
-      direction: Axis.horizontal,
-      children: [
-        ResizableChildData(
-          startingRatio: treeViewPer,
-          child: Selector<InspectorProvider, Node?>(
-            builder: (context, value, child) {
-              return ResizableContainer(
-                direction: Axis.vertical,
-                children: [
-                  const ResizableChildData(
-                    startingRatio: 0.6,
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: TreeView(),
-                    ),
-                  ),
-                  ResizableChildData(
-                    startingRatio: 0.4,
-                    child: Column(
-                      children: [
-                        AppBar(
-                          title: const Text(
-                            'Inspector',
-                          ),
-                          elevation: 0,
-                          toolbarHeight: 30,
-                          titleTextStyle: TextStyle(
-                            fontSize: 16,
-                            color: context.read<ThemeProvider>().useMaterial
-                                ? (context.read<ThemeProvider>().isDarkMode)
-                                    ? Colors.white
-                                    : Colors.black
-                                : Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Consumer<InspectorProvider>(
-                          builder: (context, provider, child) => SelectedWidgetInspector(
-                            selectedWidget: provider.selectedWidget,
-                            onUpdate: (args) {
-                              provider.updateWidget(args);
-                              return provider.selectedWidget!;
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            },
-            selector: (context, provider) => provider.editScreenWidget,
-          ),
-        ),
-        ResizableChildData(
-          startingRatio: editScreenPer,
-          child: Stack(
-            fit: StackFit.passthrough,
-            alignment: Alignment.topCenter,
+    return context.watch<InspectorProvider>().inspectorMode == InspectorMode.preview
+        ? _buildPreviewMode()
+        : ResizableContainer(
+            direction: Axis.horizontal,
             children: [
-              Consumer<InspectorProvider>(builder: (context, provider, child) {
-                return EditScreen(
-                  key: provider.editScreenKey,
-                  child: provider.editScreenWidget,
-                );
-              }),
-              const Positioned(
-                top: 0,
-                child: ToolBar(),
-              ),
-              Positioned(
-                top: 100,
-                right: 0,
-                child: Card(
-                  child: Column(
-                    children: [
-                      IconButton(
-                        onPressed: () => context.read<InspectorProvider>().editScreenScaleUp(),
-                        icon: const Icon(Icons.zoom_in),
-                        splashRadius: 20,
-                      ),
-                      IconButton(
-                        onPressed: () => context.read<InspectorProvider>().editScreenScaleDown(),
-                        icon: const Icon(Icons.zoom_out),
-                        splashRadius: 20,
-                      ),
-                      IconButton(
-                        onPressed: () => context.read<InspectorProvider>().editScreenResetLocation(),
-                        icon: SvgPicture.asset(
-                          Assets.iconsCenterReturn,
-                          width: 18,
-                          color: Theme.of(context).textTheme.bodyMedium?.color,
+              ResizableChildData(
+                startingRatio: treeViewPer,
+                child: Selector<InspectorProvider, Node?>(
+                  builder: (context, value, child) {
+                    return ResizableContainer(
+                      direction: Axis.vertical,
+                      children: [
+                        const ResizableChildData(
+                          startingRatio: 0.6,
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: TreeView(),
+                          ),
                         ),
-                        splashRadius: 20,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                right: 5,
-                child: Consumer<ThemeProvider>(
-                  builder: (BuildContext context, ThemeProvider provider, Widget? child) {
-                    return ThemeButtonMenu(
-                      onMaterialThemeUIChange: (state) {
-                        provider.useMaterial = state;
-                      },
+                        ResizableChildData(
+                          startingRatio: 0.4,
+                          child: Column(
+                            children: [
+                              AppBar(
+                                title: const Text(
+                                  'Inspector',
+                                ),
+                                elevation: 0,
+                                toolbarHeight: 30,
+                                titleTextStyle: TextStyle(
+                                  fontSize: 16,
+                                  color: context.read<ThemeProvider>().useMaterial
+                                      ? (context.read<ThemeProvider>().isDarkMode)
+                                          ? Colors.white
+                                          : Colors.black
+                                      : Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Consumer<InspectorProvider>(
+                                builder: (context, provider, child) => SelectedWidgetInspector(
+                                  selectedWidget: provider.selectedWidget,
+                                  onUpdate: (args) {
+                                    provider.updateWidget(args);
+                                    return provider.selectedWidget!;
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
                     );
                   },
+                  selector: (context, provider) => provider.editScreenWidget,
+                ),
+              ),
+              ResizableChildData(
+                startingRatio: editScreenPer,
+                child: Stack(
+                  fit: StackFit.passthrough,
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Consumer<InspectorProvider>(builder: (context, provider, child) {
+                      return EditScreen(
+                        key: provider.editScreenKey,
+                        child: provider.editScreenWidget,
+                      );
+                    }),
+                    const Positioned(
+                      top: 0,
+                      child: ToolBar(),
+                    ),
+                    Positioned(
+                      top: 100,
+                      right: 0,
+                      child: Card(
+                        child: Column(
+                          children: [
+                            IconButton(
+                              onPressed: () => context.read<InspectorProvider>().editScreenScaleUp(),
+                              icon: const Icon(Icons.zoom_in),
+                              splashRadius: 20,
+                            ),
+                            IconButton(
+                              onPressed: () => context.read<InspectorProvider>().editScreenScaleDown(),
+                              icon: const Icon(Icons.zoom_out),
+                              splashRadius: 20,
+                            ),
+                            IconButton(
+                              onPressed: () => context.read<InspectorProvider>().editScreenResetLocation(),
+                              icon: SvgPicture.asset(
+                                Assets.iconsCenterReturn,
+                                width: 18,
+                                color: Theme.of(context).textTheme.bodyMedium?.color,
+                              ),
+                              splashRadius: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 0,
+                      right: 5,
+                      child: Consumer<ThemeProvider>(
+                        builder: (BuildContext context, ThemeProvider provider, Widget? child) {
+                          return ThemeButtonMenu(
+                            onMaterialThemeUIChange: (state) {
+                              provider.useMaterial = state;
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              ResizableChildData(
+                startingRatio: dragItemsViewPer,
+                child: Stack(
+                  alignment: Alignment.center,
+                  fit: StackFit.passthrough,
+                  children: const [
+                    DragItemsView(),
+                  ],
                 ),
               ),
             ],
+          );
+  }
+
+  _buildPreviewMode() {
+    final provider = context.read<InspectorProvider>();
+    return Stack(
+      alignment: Alignment.center,
+      fit: StackFit.passthrough,
+      children: [
+        provider.editScreenWidget,
+        Positioned(
+          right: 10,
+          bottom: 10,
+          child: FloatingActionButton(
+            onPressed: () {
+              provider.setMode(InspectorMode.edit);
+            },
+            child: const Icon(Icons.edit),
           ),
-        ),
-        ResizableChildData(
-          startingRatio: dragItemsViewPer,
-          child: Stack(
-            alignment: Alignment.center,
-            fit: StackFit.passthrough,
-            children: const [
-              DragItemsView(),
-            ],
-          ),
-        ),
+        )
       ],
     );
   }

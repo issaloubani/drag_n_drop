@@ -5,8 +5,11 @@ import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import '../config/root.dart';
 import '../models/node.dart';
 
+enum InspectorMode { edit, preview }
+
 class InspectorProvider extends ChangeNotifier {
   GlobalKey<EditScreenState> editScreenKey = GlobalKey<EditScreenState>();
+  InspectorMode inspectorMode = InspectorMode.edit;
 
   Node editScreenWidget = editScreenRoot.copyWith();
   Node? selectedWidget;
@@ -65,5 +68,10 @@ class InspectorProvider extends ChangeNotifier {
 
   void editScreenRefresh() {
     editScreenKey.currentState?.refresh();
+  }
+
+  void setMode(InspectorMode mode) {
+    inspectorMode = mode;
+    notifyListeners();
   }
 }
